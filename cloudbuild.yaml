@@ -1,0 +1,26 @@
+steps:
+# 1. Construir la imagen de Docker
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/efraintest01/my-repo/todo-app:$SHORT_SHA', '.']
+
+# 2. Empujar la imagen a Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/efraintest01/my-repo/todo-app:$SHORT_SHA']
+
+# 3. Desplegar en Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'todo-app-service' # Nombre de tu servicio en Cloud Run
+    - '--image=us-central1-docker.pkg.dev/efraintest01/my-repo/todo-app:$SHORT_SHA'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated' # Permite que cualquiera pueda acceder a la URL
+images:
+- 'us-central1-docker.pkg.dev/efraintest01/my-repo/todo-app:$SHORT_SHA'
+
+# Opción para asegurar que los logs se envíen a Cloud Logging
+options:
+  logging: CLOUD_LOGGING_ONLY
