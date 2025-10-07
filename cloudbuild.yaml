@@ -18,6 +18,7 @@ steps:
     - '--region=us-central1'
     - '--platform=managed'
     - '--allow-unauthenticated' # Permite que cualquiera pueda acceder a la URL
+    - '--PORT=80'
 images:
 - 'us-central1-docker.pkg.dev/efraintest01/my-repo/todo-app:$SHORT_SHA'
 
